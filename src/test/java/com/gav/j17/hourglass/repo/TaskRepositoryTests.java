@@ -15,7 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gav.j17.ptc.HourglassTaskApplication;
-import com.gav.j17.ptc.domain.HorglassTaskStatus;
+import com.gav.j17.ptc.domain.HourglassTaskStatus;
 import com.gav.j17.ptc.domain.HourglassTask;
 import com.gav.j17.ptc.repo.TaskJpaRepository;
 
@@ -46,7 +46,7 @@ public class TaskRepositoryTests {
 		assertEquals("testTask", persistedTask.getTaskName());
 		assertEquals(Integer.valueOf(1),  persistedTask.getDuration());
 		assertNull(persistedTask.getActualDuration());
-		assertEquals(HorglassTaskStatus.NEW.name(), persistedTask.getExecutionStatus());
+		assertEquals(HourglassTaskStatus.NEW.name(), persistedTask.getExecutionStatus());
 
 		taskRepository.delete(persistedTask.getTaskName());
 	}
@@ -59,15 +59,14 @@ public class TaskRepositoryTests {
 		taskRepository.save(task);
 		//when:
 		HourglassTask persistedTask = taskRepository.findOne("testTask2");
-		persistedTask.markAsDone(200);
+		persistedTask.markAsDone(200L);
 		HourglassTask updatedTask = taskRepository.save(persistedTask);
 		//then:
 		assertEquals("testTask2", updatedTask.getTaskName());
 		assertEquals(Integer.valueOf(10),  updatedTask.getDuration());
-		assertEquals(Integer.valueOf(200),  updatedTask.getActualDuration());
-		assertEquals(HorglassTaskStatus.DONE.name(), updatedTask.getExecutionStatus());
+		assertEquals(Long.valueOf(200L),  updatedTask.getActualDuration());
+		assertEquals(HourglassTaskStatus.DONE.name(), updatedTask.getExecutionStatus());
 
 		taskRepository.delete(persistedTask.getTaskName());
 	}
-
 }

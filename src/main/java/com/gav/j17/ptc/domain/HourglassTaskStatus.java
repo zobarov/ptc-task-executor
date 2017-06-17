@@ -7,8 +7,9 @@ package com.gav.j17.ptc.domain;
  * @author alex
  *
  */
-public enum HorglassTaskStatus {
+public enum HourglassTaskStatus {
+	NEW,
+	IN_PROCESS,
 	DONE,
-	NEW
-
+	ERROR
 }

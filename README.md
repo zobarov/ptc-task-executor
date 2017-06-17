@@ -30,10 +30,43 @@ http://docs.spring.io/spring-boot/docs/current/reference/html/using-boot-running
 
 ## Usage
 
-When it's ran without any errors hit your browser with following URL pattern:
-http://localhost:8080/task?taskId=1&duration=2
+Typical UseCase. In POSTMAN for example.
 
-__NOTE: The default port has been switched to 8090 to prevent any conflicts__
+1.Submit __POST request  like:
+http://localhost:8080/task?taskId=8&duration=100
+
+Got immediate acknowledge response:
+
+{
+    "taskName": "8",
+    "status": "OK_FOR_EXECUTION",
+    "errorMsg": ""
+}
+
+2. After few seconds less then 100 hit __GET request like:
+http://localhost:8080/task?taskId=8
+
+Got in process response. Note that actual duration is null.
+
+{
+    "taskName": "8",
+    "duration": 100,
+    "actualDuration": null,
+    "executionStatus": "IN_PROCESS"
+}
+
+2. After 100 seconds hit __GET request again like:
+http://localhost:8080/task?taskId=8
+
+Got in process response. Note that actual duration is null.
+
+{
+    "taskName": "8",
+    "duration": 100,
+    "actualDuration": 100,
+    "executionStatus": "DONE"
+}
+
 
 ## Built With
 

@@ -15,7 +15,7 @@ public class HourglassTask {
 	private String taskName;	
 	private Integer duration;
 
-	private Integer actualDuration;
+	private Long actualDuration;
 	private String executionStatus;
 	
 	public HourglassTask(){		
@@ -24,16 +24,16 @@ public class HourglassTask {
 	public HourglassTask(String taskName, Integer duration) {
 		this.taskName = taskName;
 		this.duration = duration;
-		this.executionStatus = HorglassTaskStatus.NEW.name();
+		this.executionStatus = HourglassTaskStatus.NEW.name();
 	}
 	
 	public HourglassTask(String status) {
 		this.executionStatus = status;
 	}
 	
-	public void markAsDone(Integer actualDuration) {
+	public void markAsDone(Long actualDuration) {
 		this.actualDuration = actualDuration;
-		this.executionStatus = HorglassTaskStatus.DONE.name();
+		this.executionStatus = HourglassTaskStatus.DONE.name();
 	}
 	
 
@@ -50,16 +50,16 @@ public class HourglassTask {
 	public void setDuration(Integer currentDuration) {
 		this.duration = currentDuration;
 	}
-	public Integer getActualDuration() {
+	public Long getActualDuration() {
 		return actualDuration;
 	}
-	public void setActualDuration(Integer actDuration) {
+	public void setActualDuration(Long actDuration) {
 		this.actualDuration = actDuration;
 	}
 	public String getExecutionStatus() {
 		return executionStatus;
 	}
-	public void setExecutionStatus(String executionStatus) {
-		this.executionStatus = executionStatus;
+	public void setExecutionStatus(HourglassTaskStatus executionStatus) {
+		this.executionStatus = executionStatus.name();
 	}
 }

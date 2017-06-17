@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.gav.j17.ptc.domain;
 
 /**

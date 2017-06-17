@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.gav.j17</groupId>
-	<artifactId>com.gav.j17.ptc</artifactId>
+	<artifactId>hourglass-tasks</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>com.gav.j17.ptc</name>
-	<description>Demo project for Spring Boot</description>
+	<description>HourGlass Tasks Demo project for PTC</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -34,18 +34,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        
-        <!-- <dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-orm</artifactId>
-		</dependency>
-		
-		<dependency>
-    		<groupId>org.springframework.data</groupId>
-    		<artifactId>spring-data-jpa</artifactId>
-		</dependency> -->
-		
-
         
         <dependency>
 			<groupId>org.springframework.boot</groupId>
