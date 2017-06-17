@@ -21,7 +21,7 @@ http://localhost:8080/task?taskId=1&duration=2
 ### From IDE:
 1. Import as Maven Project
 2. Maven Install
-3. Run StriderApplication
+3. Run HourglassTaskApplication
 
 ### From CommandLine:
 
