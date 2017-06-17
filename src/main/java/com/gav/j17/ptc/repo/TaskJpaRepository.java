@@ -10,11 +10,6 @@ import com.gav.j17.ptc.domain.HourglassTask;
  *
  */
 @Repository
-public interface TaskJpaRepository extends CrudRepository<HourglassTask, Long> {
-	
-	
-	//public HourglassTask findByTaskId(Long taskId);
-	
-	//public String saveTask(HourglassTask task);	
+public interface TaskJpaRepository extends CrudRepository<HourglassTask, String> {
 
 }

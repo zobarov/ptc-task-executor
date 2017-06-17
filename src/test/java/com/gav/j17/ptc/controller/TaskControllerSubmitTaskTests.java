@@ -1,7 +1,8 @@
 package com.gav.j17.ptc.controller;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -10,7 +11,6 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 import java.nio.charset.Charset;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +22,16 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.gav.j17.ptc.PtcTaskApplication;
+import com.gav.j17.ptc.HourglassTaskApplication;
 
 /**
  * @author alex.gera
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = PtcTaskApplication.class)
+@SpringBootTest(classes = HourglassTaskApplication.class)
 @WebAppConfiguration
 @TestPropertySource(locations = "classpath:./application.test.properties")
-public class TaskControllerTest {
+public class TaskControllerSubmitTaskTests {
 	@Autowired
     private WebApplicationContext webApplicationContext;
 	
@@ -50,33 +50,33 @@ public class TaskControllerTest {
 
 	 @Test
 	 public void testAppNameOnly_badRequest() throws Exception {
-	        mockMvc.perform(get("/task"))
+	        mockMvc.perform(post("/task"))
 	        	.andExpect(status().isBadRequest());
 	 }
 
 	 @Test
 	 public void testWrongAppNameOnly_notFound() throws Exception {
-	        mockMvc.perform(get("/non-task"))
+	        mockMvc.perform(post("/non-task"))
 	        	.andExpect(status().isNotFound());
 	 }
 
 	 @Test
 	 public void testNonTaskIdParamOnly_badRequest() throws Exception {
-	        mockMvc.perform(get("/task")
+	        mockMvc.perform(post("/task")
 	        		.param("non-task-id", "3"))
             	.andExpect(status().isBadRequest());
 	 }
 
 	 @Test
 	 public void testTaskIdParamOnly_badRequest() throws Exception {
-	        mockMvc.perform(get("/task")
+	        mockMvc.perform(post("/task")
 	        		.param("taskId", "3"))
             	.andExpect(status().isBadRequest());
 	 }
 
 	 @Test
 	 public void testTaskIdAndDurationParam_Ok() throws Exception {
-	        mockMvc.perform(get("/task")
+	        mockMvc.perform(post("/task")
 	        		.param("taskId", "3")
 	        		.param("duration", "10"))
                  .andExpect(status().isOk());
@@ -84,7 +84,7 @@ public class TaskControllerTest {
 
 	 @Test
 	 public void testTaskIdAndNonDurationParam_badRequest() throws Exception {
-	        mockMvc.perform(get("/task")
+	        mockMvc.perform(post("/task")
 	        		.param("taskId", "3")
 	        		.param("non-duration", "10"))
                  .andExpect(status().isBadRequest());
@@ -92,90 +92,35 @@ public class TaskControllerTest {
 
 	 @Test
 	 public void testTaskIdAndDurationAndExtraParam_Ok() throws Exception {
-	        mockMvc.perform(get("/task")
+	        mockMvc.perform(post("/task")
 	        		.param("taskId", "3")
 	        		.param("duration", "10")
 	        		.param("extra-param", "extra"))
                  .andExpect(status().isOk());
 	 }
 	 
-	 /////////Content checks by example:
+	 /////////Content checks:
 	 
 	 @Test
-	 @Ignore
-	 public void testContent_ExampleOne() throws Exception {
-		mockMvc.perform(get("/strider")
-	        		.param("sps", "3")
-	        		.param("stairwell", "17"))
+	 public void testContent_OkForExecution() throws Exception {
+		mockMvc.perform(post("/task")
+	        		.param("taskId", "4")
+	        		.param("duration", "20"))
                  .andExpect(status().isOk())
                  .andExpect(content().contentType(contentType))
-                 .andExpect(jsonPath("$.minimumStridesAmount", is(6)));
+                 .andExpect(jsonPath("$.taskName", is("4")))
+                 .andExpect(jsonPath("$.status", is("OK_FOR_EXECUTION")));
 	 }
 	 
 	 @Test
-	 @Ignore
-	 public void testContent_ExampleTwo() throws Exception {
-		mockMvc.perform(get("/strider")
-	        		.param("sps", "3")
-	        		.param("stairwell", "17,17"))
+	 public void testContent_NotValidForExecution_NegativeDuration() throws Exception {
+		mockMvc.perform(post("/task")
+	        		.param("taskId", "5")
+	        		.param("duration", "-20"))
                  .andExpect(status().isOk())
                  .andExpect(content().contentType(contentType))
-                 .andExpect(jsonPath("$.minimumStridesAmount", is(14)));
-	 }
-	 
-	 @Test
-	 @Ignore
-	 public void testContent_ExampleThree() throws Exception {
-		mockMvc.perform(get("/strider")
-	        		.param("sps", "2")
-	        		.param("stairwell", "4,9,8,11,7,20,14"))
-                 .andExpect(status().isOk())
-                 .andExpect(content().contentType(contentType))
-                 .andExpect(jsonPath("$.minimumStridesAmount", is(50)));
-	 }
-	 
-	 /////////Content checks in invalid requests:
-	 @Test
-	 @Ignore
-	 public void testContent_InvalidZeroSps() throws Exception {
-		mockMvc.perform(get("/strider")
-	        		.param("sps", "0")
-	        		.param("stairwell", "4,9,8,11,7,20,14"))
-                 .andExpect(status().isOk())
-                 .andExpect(content().contentType(contentType))
-                 .andExpect(jsonPath("$.minimumStridesAmount", is(0)));
-	 }
-	 
-	 @Test
-	 @Ignore
-	 public void testContent_InvalidNegativeSps() throws Exception {
-		mockMvc.perform(get("/strider")
-	        		.param("sps", "-3")
-	        		.param("stairwell", "4,9,8,11,7,20,14"))
-              .andExpect(status().isOk())
-              .andExpect(content().contentType(contentType))
-              .andExpect(jsonPath("$.minimumStridesAmount", is(0)));
-	 }
-	 
-	 @Test
-	 @Ignore
-	 public void testContent_InvalidZeroInStairwell() throws Exception {
-		mockMvc.perform(get("/strider")
-	        		.param("sps", "2")
-	        		.param("stairwell", "4,9,8,0,7,20,14"))
-              .andExpect(status().isOk())
-              .andExpect(content().contentType(contentType))
-              .andExpect(jsonPath("$.minimumStridesAmount", is(0)));
-	 }
-	 
-	 @Test
-	 @Ignore
-	 public void testContent_InvalidNegativeInStairwell() throws Exception {
-		mockMvc.perform(get("/strider")
-	        		.param("sps", "-3")
-	        		.param("stairwell", "4,9,8,-11,7,20,14"))
-              .andExpect(status().isOk())
-              .andExpect(content().contentType(contentType))
-              .andExpect(jsonPath("$.minimumStridesAmount", is(0)));
+                 .andExpect(jsonPath("$.taskName", is("5")))
+                 .andExpect(jsonPath("$.errorMsg", containsString("Duration")))
+                 .andExpect(jsonPath("$.status", is("NOT_VALID")));
 	 }
 }

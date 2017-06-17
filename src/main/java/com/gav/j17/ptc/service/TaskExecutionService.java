@@ -5,6 +5,7 @@ package com.gav.j17.ptc.service;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,27 +30,36 @@ public class TaskExecutionService {
 	@Autowired
 	private TaskJpaRepository taskPersister;
 	
-	@Autowired
-	private ExecutorService executorService;
+	private ExecutorService executorService = Executors.newCachedThreadPool();
 	
 	@Async
-	public Future<String> executeTask(String taskId, Integer duration) {
-		logger.debug("Getting to submit a task {}/{}.", taskId, duration);
+	public Future<HourglassTask> executeTask(String taskId, Integer duration) {
+		logger.debug("Submitting a task {}/{}.", taskId, duration);
 		HourglassTask hTask = new HourglassTask(taskId, duration);
-		taskPersister.save(hTask);
+		taskPersister.save(hTask);		
 		
-		
-		Future<String> future
-	       = executorService.submit(new Callable<String>() {
-	         public String call() {
-	             return "Submitted";
+		Future<HourglassTask> future
+	       = executorService.submit(new Callable<HourglassTask>() {
+	         public HourglassTask call() {
+	             return hTask;
 	         }});
 		return future;
 	}
 	
+	public boolean isTaskSubmitted(String taskId) {
+		HourglassTask persistedTask = taskPersister.findOne(taskId);
+		return persistedTask != null;		
+	}
+	
 	
 	public HourglassTask checkTaskStatus(String taskId) {
-		return new HourglassTask();
-	}	
-
+		logger.debug("Getting info about task {}.", taskId);
+		HourglassTask persistedTask = taskPersister.findOne(taskId);
+		if(persistedTask == null) {
+			logger.warn("Checking unpersisted task with id [{}]", taskId);
+			return new HourglassTask("NON-PERSISTED");
+			
+		}
+		return persistedTask;
+	}
 }
