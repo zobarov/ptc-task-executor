@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gav.j17.ptc.domain.TaskDTO;
+import com.gav.j17.ptc.domain.HourglassTask;
 import com.gav.j17.ptc.service.TaskExecutionService;
 import com.gav.j17.ptc.util.Loggable;
 
@@ -28,7 +28,7 @@ public class TaskExecutionController {
 	@Autowired
 	private TaskExecutionService taskExecuionService;
 	
-	@RequestMapping(method = RequestMethod.PUT)
+	@RequestMapping(method = RequestMethod.POST)
 	public @ResponseBody String submitTask(@RequestParam(name = "taskId", required = true) String taskId,
 			 							   @RequestParam(name = "duration", required = true) Integer duration) {
 		
@@ -44,15 +44,14 @@ public class TaskExecutionController {
 		} catch (ExecutionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
+		}		
 		
 		return submittionAckn;
 	}
 	
 	@RequestMapping(method = RequestMethod.GET)
-	public @ResponseBody TaskDTO trackTask(@RequestParam(name = "taskId", required = true) String taskId) {
-		TaskDTO resultTask = new TaskDTO();
+	public @ResponseBody HourglassTask trackTask(@RequestParam(name = "taskId", required = true) String taskId) {
+		HourglassTask resultTask = new HourglassTask();
 		return resultTask;
 	}
 }
